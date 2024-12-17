@@ -13,7 +13,7 @@ library(readxl)
 
 ```{r}
 # Set working directory
-my_dir <-"C:/Users/matt/Documents/git/crm/crm_eqns/"
+my_dir <-"my/dir/here/crm_eqns/"
 ```
 
 ```{r}
@@ -91,11 +91,11 @@ dead <- tribble(
 ```
 
 ```{r}
-# An example data set, using the standing dead tree example from
+# An example data set, using example from
 # Woodall et al. 2011 (Example 3)
 
 # Found on pages 12-13
-
+# 
 tree <- tribble(
   ~EXAMPLE, ~CONFIG_ID, ~SPCD, ~DIA, ~HT, ~STATUSCD, ~TREECLCD, ~DECAYCD, ~SI, ~BALIVE,
          1, "S23LLS",     746, 10.5,  NA,         1,         2,       0,  66,   72.53, # Quaking aspen (Woodall example 1)

@@ -13,7 +13,7 @@ library(readxl)
 
 ```{r}
 # Set working directory
-my_dir <-"C:/Users/matt/Documents/Arbor/Projects/nsvb/analysis/crm_eqns/"
+my_dir <-"my/dir/here/crm_eqns/"
 ```
 
 ```{r}
@@ -106,20 +106,17 @@ dead <- tribble(
 ```
 
 ```{r}
-# An example data set, using the standing dead tree example from
+# An example data set, using example from
 # Woodall et al. 2011 (Example 3)
 
 # Found on pages 12-13
 # 
-# tree <- tribble(
-#   ~EXAMPLE, ~CONFIG_ID, ~SPCD, ~DIA, ~HT, ~STATUSCD, ~TREECLCD, ~DECAYCD, ~SI, ~BALIVE,
-#   1, "S23LPS", 746, 10.5, NA, 2, 4, 0, 73, 78.33, # Quaking aspen (Woodall example)
-#   2, "S23LPS", 122, 10.5, 65, 2, 4, 0, 73, 78.33, # Ponderosa pine
-#   3, "S23LPS", 66, 4.9, 20, 2, 4, 0, NA, NA, # Rocky Mountain juniper
-#   4, "S23LPS", 746, 10.5, NA, 2, 4, 3,  73, 78.33 # (Domke example)
-#   )
+tree <- tribble(
+  ~EXAMPLE, ~CONFIG_ID, ~SPCD, ~DIA, ~HT, ~STATUSCD, ~TREECLCD, ~DECAYCD, ~SI, ~BALIVE,
+         1, "S23LLS",     746, 10.5,  NA,         1,         2,       0,  66,   72.53, # Quaking aspen (Woodall example 1)
+         2, "S23LLS",     746, 10.5,  NA,         1,         3,       0,  73,   82.27, # Quaking aspen (Woodall example 2)
+  )
 
-tree <- sdt_tree
 
 # 1. Gross volume
 tree <- inner_join(tree, coefs_VOLCFGRS, by = "SPCD") 
