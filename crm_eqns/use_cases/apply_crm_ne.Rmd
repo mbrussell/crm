@@ -1,0 +1,152 @@
+---
+title: "Apply CRM - Northeast states"
+author: "Matt Russell"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(knitr)
+library(readxl)
+```
+
+```{r}
+# Set working directory
+my_dir <-"C:/Users/matt/Documents/Arbor/Projects/nsvb/analysis/crm_eqns/"
+```
+
+```{r}
+# Load volume functions
+source(purl(paste0(my_dir, "volume/volume_ne.Rmd"), quiet = T))
+
+# Load CRM functions
+source(purl(paste0(my_dir, "crm/crm.Rmd"), quiet = T))
+```
+
+
+```{r}
+# Gross volume
+coefs_VOLCFGRS <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "NE_coefs") |> 
+  rename(COEF_TBL_SP = Species)
+
+config_VOLCFGRS <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "NE_config") 
+
+coefs_VOLCFGRS <- inner_join(coefs_VOLCFGRS, config_VOLCFGRS, by = "COEF_TBL_SP") |>
+  rename(SPCD = SPECIES_NUM) |>
+  relocate(SPCD) |> 
+  select(-c(COEF_TBL_SP, CONFIG_ID:COEF_TABLE)) 
+
+# Reference Species table
+ref_spp <- read_csv(paste0(my_dir, "nrs_gtr88/REF_SPECIES.csv")) 
+
+# Domke et al. 2011 Standing dead reductions (their Table 2)
+dead <- tribble(
+ ~SFTWD_HRDWD, ~DECAYCD, ~DENS_RED, ~SLA_TOP, ~SLA_BARK, ~SLA_BOLE, ~SLA_STUMP, ~SLA_ROOTS,
+ # Hardwoods
+ "H", 0, 1, 1, 1, 1, 1, 1,
+ "H", 1, 0.970, 1, 0.92, 1, 1, 1, 
+ "H", 2, 0.750, 0.50, 0.66, 1, 1, 0.95,
+ "H", 3, 0.540, 0.20, 0.39, 1, 1, 0.80,
+ "H", 4, 0.613, 0.10, 0.21, 1, 1, 0.65,
+ "H", 5, 0.613, 0, 0, 1, 1, 0.50,
+ # Softwoods
+ "S", 0, 1, 1, 1, 1, 1, 1,
+ "S", 1, 0.892, 1, 0.92, 1, 1, 1,
+ "S", 2, 0.831, 0.50, 0.66, 1, 1, 0.95,
+ "S", 3, 0.591, 0.20, 0.39, 1, 1, 0.80,
+ "S", 4, 0.433, 0.10, 0.21, 1, 1, 0.65,
+ "S", 5, 0.433, 0, 0, 1, 1, 0.50
+ )
+```
+
+```{r}
+# An example data set, using the standing dead tree example from
+# Woodall et al. 2011 (Example 3)
+
+# Found on pages 12-13
+
+# tree <- tribble(
+#   ~EXAMPLE, ~CONFIG_ID, ~SPCD, ~DIA, ~HT, ~STATUSCD, ~TREECLCD, ~DECAYCD, ~BOLE_HT, ~PCT_ROTTEN,
+#   1, "S24", 12, 10.5, NA, 2, 4, 0, 40, 15, # Quaking aspen (Woodall example)
+#   2, "S24", 12, 10.5, NA, 2, 4, 3,  40, 15, # (Domke example)
+#   2, "S24", 10, 10.5, NA, 2, 4, 3,  40, 15, 
+#   2, "S24", 90, 4.2, NA, 2, 4, 3,  30, 15 
+#   )
+
+tree <- sdt_tree
+
+tree <- inner_join(tree, coefs_VOLCFGRS, by = "SPCD") 
+
+tree <- tree |> 
+  rowwise() |> 
+          # 1. Gross volume
+  mutate(VOLCFGRS = ifelse(DIA >= 5.0, calc_VOLCFGRS(SPCD = SPCD, DBH = DIA, BOLE_HT = BOLEHT, 
+                                         B0 = B0, B1 = B1, B2 = B2, B3 = B3, B4 = B4, B5 = B5), 0),
+         # 2. Sound volume
+         VOLCFSND = calc_VOLCFSND(VOLCFGRS = VOLCFGRS, PCT_ROTTEN = CULL)) |> 
+    select(-c(B1:B5, B0))
+tree$VOLCFGRS
+tree$VOLCFSND
+```
+
+```{r}
+tree <- inner_join(tree, ref_spp, by = "SPCD") 
+
+tree <- inner_join(tree, dead, by = c("SFTWD_HRDWD", "DECAYCD")) 
+
+tree <- tree |> 
+  rowwise() |> 
+  # 3. DRYBIO_BOLE
+  mutate(DRYBIO_BOLE = calc_DRYBIO_BOLE(SPCD = SPCD, VOLCFSND = VOLCFSND, 
+                                        WOOD_SPGR_GREENVOL_DRYWT = WOOD_SPGR_GREENVOL_DRYWT, 
+                                        BARK_VOL_PCT = BARK_VOL_PCT,
+                                        BARK_SPGR_GREENVOL_DRYWT = BARK_SPGR_GREENVOL_DRYWT,
+                                        DENS_RED = DENS_RED, 
+                                        SLA_BOLE = SLA_BOLE, 
+                                        SLA_BARK = SLA_BARK),
+      # 4. CRM adjustment factor   
+      CRM_AF = calc_CRM_ADJ(JENKINS_SPGRPCD = JENKINS_SPGRPCD, 
+                               DRYBIO_BOLE = DRYBIO_BOLE, 
+                               DBH = DIA),
+      # 5. Stump volume and biomass
+      DRYBIO_STUMP = calc_DRYBIO_STUMP(SPCD = SPCD, 
+                               DBH = DIA,
+                               CRM_AF = CRM_AF,
+                               RAILE_STUMP_DOB_B1 = RAILE_STUMP_DOB_B1, 
+                               RAILE_STUMP_DIB_B1 = RAILE_STUMP_DIB_B1, 
+                               RAILE_STUMP_DIB_B2 = RAILE_STUMP_DIB_B2,
+                               WOOD_SPGR_GREENVOL_DRYWT = WOOD_SPGR_GREENVOL_DRYWT, 
+                               BARK_SPGR_GREENVOL_DRYWT = BARK_SPGR_GREENVOL_DRYWT,
+                               SLA_STUMP = SLA_STUMP),
+      # 6. Top and branch biomass
+      DRYBIO_TOP = calc_TOP_BRANCH(JENKINS_SPGRPCD = JENKINS_SPGRPCD, 
+                                        DBH = DIA, 
+                                        DRYBIO_STUMP = DRYBIO_STUMP, 
+                                        DRYBIO_BOLE = DRYBIO_BOLE,
+                                      SLA_TOP = SLA_TOP),
+      # 7. Total aboveground biomass
+      BIOMASS = calc_BIOMASS(DBH = DIA,
+                             JENKINS_SPGRPCD =JENKINS_SPGRPCD,
+                             DRYBIO_BOLE = DRYBIO_BOLE, 
+                                DRYBIO_STUMP = DRYBIO_STUMP, 
+                                DRYBIO_TOP = DRYBIO_TOP,
+                             DENS_RED = DENS_RED, 
+                             SLA_TOP = SLA_TOP, 
+                             SLA_BOLE = SLA_BOLE, 
+                             SLA_BARK = SLA_BARK),
+      # 8. Total aboveground carbon
+      CARBON = calc_CARBON(BIOMASS = BIOMASS)
+      ) 
+
+tree$VOLCFGRS
+tree$VOLCFSND
+tree$CRM_AF
+tree$DRYBIO_BOLE
+tree$DRYBIO_STUMP
+tree$DRYBIO_TOP
+tree$BIOMASS
+tree$CARBON
+```

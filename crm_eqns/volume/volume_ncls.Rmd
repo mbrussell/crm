@@ -1,0 +1,51 @@
+---
+title: "Volume equations for CRM equations - North Central (MI, MN, WI)"
+author: "Matt Russell"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+# 1. Gross volume
+calc_VOLCFGRS <- function(SPCD, DBH, SICOND, BALIVE, B0, B1, B2, B3, B4, B5, B6, B7, 
+                          B8, B9, B10, B11, B12, B13, B14, B15, B16, B17, B18, B19) {
+  # conditions
+  SICOND = ifelse(SICOND < 20, 20, SICOND)
+  SICOND = ifelse(SICOND > 120, 120, SICOND)
+  BALIVE = ifelse(BALIVE < 50, 50, BALIVE)
+  BALIVE = ifelse(BALIVE > 350, 350, BALIVE)
+  # top diameter outside bark
+  V1 = 4 
+  # predicted bole length
+  V2 <- B12 + B13*(1 - exp(-B14*DBH))**B15*SICOND**B16*(B17 - (V1/DBH))**
+      B18*BALIVE**B19 
+  # gross volume   
+  VOLCFGRS = ifelse(is.na(SICOND) | is.na(BALIVE), NA,
+                    ((B0 + (B1*DBH) + (B2*V1) + (B3*DBH**2) + (B4*DBH**2*V2) + (B5*V2**2)
+                      + (B6*V2*V1**2) + (B7*DBH**2*V2**3) + (B8*DBH**2*V2**2*V1))
+                     *B9*(B10 + (B11*DBH)))/100) 
+  VOLCFGRS = ifelse(VOLCFGRS <= 0, 0, VOLCFGRS)
+  VOLCFGRS = ifelse(DBH >= 5.0, VOLCFGRS, 0)
+  return(VOLCFGRS)
+  }
+
+# SPCD == 66
+calc_VOLCFGRS_66 <- function(SPCD, DRC, HT, B0, B1, B2, B3) {
+  # top diameter outside bark
+  V1 = DRC**2*HT*0.001
+  # gross volume   
+  VOLCFGRS = ifelse(V1 <= B3, B0 + B1*V1 + B2*V1,
+                    B0 + B1*V1 + B2*(3*B3**2 - (2*B3**3/V1))) 
+  VOLCFGRS = ifelse(VOLCFGRS <= 0, 0.1, VOLCFGRS)
+  VOLCFGRS = ifelse(DRC < 5.0, 0, VOLCFGRS)
+  return(VOLCFGRS)
+  }
+```
+
+```{r}
+# 2. Sound volume
+calc_VOLCFSND <- function(SPCD, DBH, VOLCFGRS, TREECLCD, B1, B2){
+  VOLCFSND = ifelse(DBH >= 5.0, VOLCFGRS*(1-((B1*B2)/100)), 0)
+  return(VOLCFSND)
+  } 
+```

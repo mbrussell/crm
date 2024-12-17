@@ -1,0 +1,48 @@
+---
+title: "Volume equations for CRM equations - North Central (KS, ND, NE, SD)"
+author: "Matt Russell"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+# 1. Gross volume
+calc_VOLCFGRS <- function(SPCD, DBH, SICOND, B1, B2, B3, B4){
+  # gross volume   
+  VOLCFGRS = ifelse(is.na(SICOND), NA, B1*SICOND**B2*(1-exp(B3*DBH**B4)))
+  VOLCFGRS = ifelse(VOLCFGRS <= 0, 0, VOLCFGRS)
+  VOLCFGRS = ifelse(DBH >= 5.0, VOLCFGRS, 0)
+  return(VOLCFGRS)
+  }
+
+# SPCD == 66
+calc_VOLCFGRS_66 <- function(SPCD, DRC, HT, B0, B1, B2, B3) {
+  V1 = DRC**2*HT*0.001
+  # gross volume   
+  VOLCFGRS = ifelse(V1 <= B3, B0 + B1*V1 + B2*V1,
+                    B0 + B1*V1 + B2*(3*B3**2 - (2*B3**3/V1))) 
+  VOLCFGRS = ifelse(VOLCFGRS <= 0, 0.1, VOLCFGRS)
+  VOLCFGRS = ifelse(DRC < 5.0, 0, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# SPCD == 122
+calc_VOLCFGRS_122 <- function(SPCD, DBH, HT, B0, B1, B2, B3, B4, B5) {
+
+  # gross volume   
+  VOLCFGRS = ifelse((DBH**2)*HT <= B1, B2+B3*(DBH**2)*HT, 
+                    B4+B5*(DBH**2)*HT) 
+  VOLCFGRS = ifelse(VOLCFGRS <= 0, 0.1, VOLCFGRS)
+  VOLCFGRS = ifelse(DBH < 5.0, 0, VOLCFGRS)
+  return(VOLCFGRS)
+  }
+```
+
+```{r}
+# 2. Sound volume
+# 2. Sound volume
+calc_VOLCFSND <- function(SPCD, DBH, VOLCFGRS, TREECLCD, B1, B2){
+  VOLCFSND = ifelse(DBH >= 5.0, VOLCFGRS*(1-((B1*B2)/100)), 0)
+  return(VOLCFSND)
+  } 
+```
