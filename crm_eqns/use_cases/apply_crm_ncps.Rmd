@@ -13,7 +13,7 @@ library(readxl)
 
 ```{r}
 # Set working directory
-my_dir <-"my/dir/here/crm_eqns/"
+my_dir <-".../crm_eqns/"
 ```
 
 ```{r}
@@ -65,22 +65,23 @@ config_VOLCFSND <- read_excel(paste0(my_dir, "nrs_gtr88/volcfsnd_eq_coefs.xlsx")
                    sheet = "NCCS_config") |> 
   rename(SPCD = SPECIES_NUM)
 
-coefs_VOLCFSND <- inner_join(coefs_VOLCFSND, config_VOLCFSND, by = "COEF_TBL_SP")
+coefs_VOLCFSND <- inner_join(coefs_VOLCFSND, config_VOLCFSND, by = "COEF_TBL_SP",
+                             relationship = "many-to-many")
 
 # Need to add a SPCD = 66 to sound volume coefficients.
 # Use coefficients from SPCD 68 (eastern red cedar)
-coefs_VOLCFSND_66 <- coefs_VOLCFSND |> 
-  filter(SPCD == 68) |> 
-  mutate(SPCD = 66)
-
-coefs_VOLCFSND <- rbind(coefs_VOLCFSND, coefs_VOLCFSND_66)
+# coefs_VOLCFSND_66 <- coefs_VOLCFSND |> 
+#   filter(SPCD == 68) |> 
+#   mutate(SPCD = 66)
+# 
+# coefs_VOLCFSND <- rbind(coefs_VOLCFSND, coefs_VOLCFSND_66)
 # Need to add a SPCD = 122 to sound volume coefficients.
 # Use coefficients from SPCD 125 (red pine)
-coefs_VOLCFSND_122 <- coefs_VOLCFSND |> 
-  filter(SPCD == 129) |> 
-  mutate(SPCD = 122)
-
-coefs_VOLCFSND <- rbind(coefs_VOLCFSND, coefs_VOLCFSND_66, coefs_VOLCFSND_122)
+# coefs_VOLCFSND_122 <- coefs_VOLCFSND |> 
+#   filter(SPCD == 129) |> 
+#   mutate(SPCD = 122)
+# 
+# coefs_VOLCFSND <- rbind(coefs_VOLCFSND, coefs_VOLCFSND_66, coefs_VOLCFSND_122)
 
 # Reference Species table
 ref_spp <- read_csv(paste0(my_dir, "nrs_gtr88/REF_SPECIES.csv")) 
@@ -106,20 +107,15 @@ dead <- tribble(
 ```
 
 ```{r}
-# An example data set, using example from
-# Woodall et al. 2011 (Example 3)
-
-# Found on pages 12-13
-# 
-tree <- tribble(
-  ~EXAMPLE, ~CONFIG_ID, ~SPCD, ~DIA, ~HT, ~STATUSCD, ~TREECLCD, ~DECAYCD, ~SI, ~BALIVE,
-         1, "S23LLS",     746, 10.5,  NA,         1,         2,       0,  66,   72.53, # Quaking aspen (Woodall example 1)
-         2, "S23LLS",     746, 10.5,  NA,         1,         3,       0,  73,   82.27, # Quaking aspen (Woodall example 2)
-  )
-
+tree <- sdt_tree
 
 # 1. Gross volume
-tree <- inner_join(tree, coefs_VOLCFGRS, by = "SPCD") 
+tree <- tree |> 
+  mutate(SPCD = ifelse(SPCD %in% c(6918, 6748), 999, SPCD)) |> 
+  inner_join(coefs_VOLCFGRS, by = "SPCD") 
+
+tree_filter <- tree |> 
+  filter(is.na(B1))
 
 tree <- tree |> 
   rowwise() |> 
@@ -135,7 +131,13 @@ tree <- tree |>
 tree$VOLCFGRS
 
 # 2. Sound volume
-tree <- inner_join(tree, coefs_VOLCFSND, by = c("SPCD", "TREECLCD")) 
+tree <- tree |> 
+  mutate(TREECLCD = ifelse(is.na(TREECLCD), 4, TREECLCD)) |> 
+  inner_join(coefs_VOLCFSND, by = c("SPCD", "TREECLCD")) 
+
+tree_filter <- tree |> 
+  filter(is.na(B0))
+
 
 tree <- tree |> 
   rowwise() |> 

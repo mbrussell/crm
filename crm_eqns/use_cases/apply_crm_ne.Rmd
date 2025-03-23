@@ -13,7 +13,7 @@ library(readxl)
 
 ```{r}
 # Set working directory
-my_dir <-"my/dir/here/crm_eqns/"
+my_dir <-".../crm_eqns/"
 ```
 
 ```{r}
@@ -63,17 +63,7 @@ dead <- tribble(
 ```
 
 ```{r}
-# An example data set, using example from
-# Woodall et al. 2011 (Example 3)
-
-# Found on pages 12-13
-# 
-tree <- tribble(
-  ~EXAMPLE, ~CONFIG_ID, ~SPCD, ~DIA, ~HT, ~STATUSCD, ~TREECLCD, ~DECAYCD, ~SI, ~BALIVE,
-         1, "S23LLS",     746, 10.5,  NA,         1,         2,       0,  66,   72.53, # Quaking aspen (Woodall example 1)
-         2, "S23LLS",     746, 10.5,  NA,         1,         3,       0,  73,   82.27, # Quaking aspen (Woodall example 2)
-  )
-
+tree <- sdt_tree
 
 tree <- inner_join(tree, coefs_VOLCFGRS, by = "SPCD") 
 
@@ -102,7 +92,12 @@ tree <- tree |>
                                         BARK_VOL_PCT = BARK_VOL_PCT,
                                         BARK_SPGR_GREENVOL_DRYWT = BARK_SPGR_GREENVOL_DRYWT,
                                         DENS_RED = DENS_RED, 
-                                        SLA_BOLE = SLA_BOLE, 
+                                        # DENS_RED = ifelse(DECAYCD == 1, STANDING_DEAD_DECAY_RATIO1,
+                                        #                   ifelse(DECAYCD == 2, STANDING_DEAD_DECAY_RATIO2,
+                                        #                          ifelse(DECAYCD == 3, STANDING_DEAD_DECAY_RATIO3,
+                                        #                                 ifelse(DECAYCD == 4, STANDING_DEAD_DECAY_RATIO4,
+                                        #                                        ifelse(DECAYCD == 5, STANDING_DEAD_DECAY_RATIO5, 1))))),
+                                         SLA_BOLE = SLA_BOLE, 
                                         SLA_BARK = SLA_BARK),
       # 4. CRM adjustment factor   
       CRM_AF = calc_CRM_ADJ(JENKINS_SPGRPCD = JENKINS_SPGRPCD, 
@@ -131,6 +126,11 @@ tree <- tree |>
                                 DRYBIO_STUMP = DRYBIO_STUMP, 
                                 DRYBIO_TOP = DRYBIO_TOP,
                              DENS_RED = DENS_RED, 
+                             # DENS_RED = ifelse(DECAYCD == 1, STANDING_DEAD_DECAY_RATIO1,
+                             #                              ifelse(DECAYCD == 2, STANDING_DEAD_DECAY_RATIO2,
+                             #                                     ifelse(DECAYCD == 3, STANDING_DEAD_DECAY_RATIO3,
+                             #                                            ifelse(DECAYCD == 4, STANDING_DEAD_DECAY_RATIO4,
+                             #                                                   ifelse(DECAYCD == 5, STANDING_DEAD_DECAY_RATIO5, 1))))),
                              SLA_TOP = SLA_TOP, 
                              SLA_BOLE = SLA_BOLE, 
                              SLA_BARK = SLA_BARK),

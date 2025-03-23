@@ -1,0 +1,136 @@
+---
+title: "Volume equations for CRM equations - RMRS (All states)"
+author: "Matt Russell"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+# 1. Gross volume
+
+# Hann and Bare 1978
+calc_VOLCFGRS_hann_bare <- function(SPCD, DBH, HT, B1, B2, B3, B4, B5, B6) {
+  V1 = 4
+  VOLCFGRS = B1 + (B2*DBH**2*HT) - (B3 + B4*((V1**3*HT)/(DBH**B5))+B6*DBH**2)
+  VOLCFGRS = ifelse(VOLCFGRS <= 0 & DBH >= 1, 0.1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# Myers 1964a, Myers and Edminster 1972, Myers 1964b, Edminster et al. 1982
+calc_VOLCFGRS_myers <- function(SPCD, DBH, HT, B1, B2, B3, B4, B5) {
+  VOLCFGRS = ifelse(DBH**2*HT <= B5, B1 + (B2*DBH**2*HT), B3 + (B4*DBH**2*HT))
+  VOLCFGRS = ifelse(VOLCFGRS <= 0 & DBH >= 1, 0.1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# Moisen 1978
+calc_VOLCFGRS_moisen <- function(SPCD, DBH, HT, B1, B2, B3, B4, B5, B6, B7) {
+  V1 = B5*DBH**B6*HT**B7
+  V2 = 4
+  VOLCFGRS = V1 - V1*B1*((V2/B2)**B3/(DBH**B4))
+  VOLCFGRS = ifelse(VOLCFGRS <= 0 & DBH >= 1, 0.1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# Kemp 1956
+calc_VOLCFGRS_kemp <- function(SPCD, DBH, HT, B1, B2, B3, B4, B5) {
+  VOLCFGRS = ifelse(DBH**2*HT <= B5 | (DBH < 21 & B5 = 0), 
+                    B1 + (B2*DBH**2*HT), 
+                    B3 + (B4*DBH**2*HT))
+  VOLCFGRS = ifelse(VOLCFGRS <= 0, 0.1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# Hann and Bare 1978 +
+calc_VOLCFGRS_hann_bare_plus <- function(SPCD, DBH, HT, B1, B2, B3, B4, B5, B6,
+                                         B7, B8, B9, B10, B11, B12) {
+    V1 = 4
+    VOLCFGRS = ifelse(DBH < 21,
+                    B1 + (B2*DBH**2*HT) - (B3 + B4*((V1**3*HT)/(DBH**B5))+B6*DBH**2),
+                    B7 + (B8*DBH**2*HT) - (B9 + (B10*((V1**3*HT)/(DBH**B11))+B12*DBH**2)))
+                                         
+    VOLCFGRS = ifelse(VOLCFGRS <= 0 & DBH >= 1, 0.1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# Edminster et al. 1980
+calc_VOLCFGRS_edminster <- function(SPCD, DBH, HT, B0, B1) {
+    VOLCFGRS = ifelse(DBH >= 5,
+                    B0 + B1*DBH**2*HT,
+                    NA)
+    VOLCFGRS = ifelse(VOLCFGRS <= 0 & !is.na(VOLCFGRS), 0.1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# Chojnacky 1994
+calc_VOLCFGRS_chojnacky94 <- function(SPCD, DRC, HT, B0, B1, B2, B3) {
+    V1 = DRC**2*HT*0.001
+    VOLCFGRS = ifelse(V1 <= B3,
+                    B0 + B1*V1 + (B2*V1**2),
+                    B0 + B1*V1 + B2*(3*B3**2 - (2*B3**3/V1)))
+    VOLCFGRS = ifelse(VOLCFGRS <= 0, 0.1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# Chittester and MacLean 1984
+calc_VOLCFGRS_chit_mac <- function(SPCD, DBH, HT, B0, B1, B2, B3, B4, B5, B6,
+                                   B7, B8, B9, B10) {
+    X1 = min(DBH, 60)
+    V1 = B6*X1**2*(B7 + B8*HT - (B9*X1*HT / (HT + B10))*HT*(HT/(HT + B10)))**2
+    V1 = ifelse(V1 <= 0, 2, V1)
+    VOLCFGRS = ((V1 + B1) / (B2 + B3*exp(B4*X1))) + B5
+    VOLCFGRS = ifelse(VOLCFGRS <= 0, 1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# Unknown
+calc_VOLCFGRS_unknown <- function(SPCD, DBH, HT, B0, B1, B2, B3, B4) {
+    VOLCFGRS = ifelse((SPCD < 300 & DBH < 9) | (SPCD >= 300 & DBH < 11),
+                    B1 + B2*DBH**2*HT,
+                    B3 + B4*DBH**2*HT)
+    VOLCFGRS = ifelse(VOLCFGRS <= 0 | is.na(DBH) | DBH < 5, 0.1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# Chojnacky 1985
+calc_VOLCFGRS_chojnacky85 <- function(SPCD, DRC, HT, NUM_STEMS, B0, B1, B2, B3) {
+    VOLCFGRS = ifelse(DRC >= 3 & HT > 0 & NUM_STEMS == 1,
+                      (B0 + B1*(DRC**2*HT)**B2 + B3)**3,
+                      ifelse(DRC >= 3 & HT > 0 & NUM_STEMS != 1,
+                             (B0 + B1*(DRC**2*HT)**B2)**3 * NUM_STEMS,
+                             0.1))
+    VOLCFGRS = ifelse(VOLCFGRS <= 0, 0.1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# Chojnacky 1988
+calc_VOLCFGRS_chojnacky88 <- function(SPCD, DRC, HT, B1, B2, B3, B4, B5, B6) {
+    V1 = DRC**2*HT*0.001
+    VOLCFGRS = ifelse(V1 <= B6,
+                      B1 + B2*V1 + B3*V1**2,
+                      B4 + B2*V1-(B5/V1))
+    VOLCFGRS = ifelse(VOLCFGRS <= 0, 0.1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+
+# Chojnacky 1985 (part 2)
+calc_VOLCFGRS_chojnacky85_2 <- function(SPCD, DRC, HT, NUM_STEMS, B0, B1, B2, B3) {
+    VOLCFGRS = ifelse(DRC >= 3 & HT > 0 & NUM_STEMS == 1,
+                      (B0 + B1*(DRC**2*HT)**B2 + B3)**3,
+                      ifelse(DRC >= 3 & HT > 0 & NUM_STEMS != 1,
+                             (B0 + B1*(DRC**2*HT)**B2)**3 * NUM_STEMS,
+                             0))
+    VOLCFGRS = ifelse(VOLCFGRS <= 0, 0.1, VOLCFGRS)
+  return(VOLCFGRS)
+}
+```
+
+```{r}
+# 2. Sound volume
+calc_VOLCFSND <- function(PCT_ROTTEN, VOLCFGRS){
+  PCT_ROTTEN = ifelse(is.na(PCT_ROTTEN), 0, 
+                      ifelse(PCT_ROTTEN > 98, 100, PCT_ROTTEN))
+  VOLCFSND = VOLCFGRS*(1-(PCT_ROTTEN/100))
+  return(VOLCFSND)
+  } 
+```

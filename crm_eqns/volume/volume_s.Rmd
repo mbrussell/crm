@@ -1,0 +1,53 @@
+---
+title: "Volume equations for CRM equations - South (All states)"
+author: "Matt Russell"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+special_spp <- c(58, 59, 69, 106, 140, 141, 
+                61, 63, 66, 303, 321, 755, 756, 758, 810, 843, 846, 867, 8513,
+                122,
+                202)
+
+# 1. Gross volume
+
+calc_VOLCFGRS <- function(SPCD, DBH, HT, DRC, B0, B1, B2, B3, B4, B5, B6,
+                          B7, B8, B9, B10, B11, B12) {
+  if(!(SPCD %in% special_spp))
+    {VOLCFGRS = ifelse(is.na(HT), NA, B0 + (B1*(DBH**2)*HT))}
+  else if(SPCD %in% c(58, 59, 69, 106, 140, 141))
+    {V1 = (DRC**2)*(HT*0.001)
+    VOLCFGRS = ifelse(V1 <= B3, B0 + B1*V1 + B2*(V1**2), 
+                      B0 + (B1*V1)+ B2*((3*B3**2 -((2*B3**3)/V1))))
+    VOLCFGRS = ifelse(VOLCFGRS <= 0, 0.1, VOLCFGRS)}
+  else if(SPCD %in% c(61, 63, 66, 303, 321, 755, 756, 758, 810, 843, 846, 867, 8513))  
+    {V1 = (DRC**2)*(HT*0.001)
+    VOLCFGRS = ifelse(V1 <= B6, B1 + B2*V1 + B3*V1**2, B4 + (B2*V1) - (B5/V1))
+    VOLCFGRS = ifelse(VOLCFGRS <= 0, 0.1, VOLCFGRS)}
+  else if(SPCD == 122)  
+    {V1 = 4
+    VOLCFGRS = ifelse(DBH <= 21, (B1 + B2*DBH**2*HT) - (B3 + B4*(((V1**3)*HT)/(DBH*B5))+B6*DBH**2), 
+                      B7 + B8*(DBH**2)*HT - B9 + B10*(((V1**3)*HT)/(DBH**B11)+B12*DBH**2))
+    VOLCFGRS = ifelse(VOLCFGRS <= 0 & DBH >= 1, 0.1, VOLCFGRS)}
+  else if(SPCD == 202)  
+    {V1 = 4
+    VOLCFGRS = B1 + B2*(DBH**2)*HT - B3 + B4*(((V1**3)*HT)/(DBH*B5)+B6*DBH**2)
+    VOLCFGRS = ifelse(VOLCFGRS <= 0 & DBH >= 1, 0.1, 
+                      B1 + B2*(DBH**2)*HT - B3 + B4*(((V1**3)*HT)/(DBH*B5)+B6*DBH**2))}
+  else{
+     VOLCFGRS = NA
+   }
+  return(VOLCFGRS)
+  }
+```
+
+```{r}
+# 2. Sound volume
+calc_VOLCFSND <- function(PCT_ROTTEN, VOLCFGRS){
+  VOLCFSND = ifelse(is.na(PCT_ROTTEN), 0, 
+                    ifelse(PCT_ROTTEN > 98, 100, VOLCFGRS*(1-(PCT_ROTTEN/100))))
+  return(VOLCFSND)
+  } 
+```

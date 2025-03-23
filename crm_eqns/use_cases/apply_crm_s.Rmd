@@ -1,0 +1,255 @@
+---
+title: "Apply CRM - Southern states"
+author: "Matt Russell"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(knitr)
+library(readxl)
+```
+
+```{r}
+# Set working directory
+my_dir <-".../crm_eqns/"
+```
+
+```{r}
+# Load volume functions
+source(purl(paste0(my_dir, "volume/volume_s.Rmd"), quiet = T))
+
+# Load CRM functions
+source(purl(paste0(my_dir, "crm/crm.Rmd"), quiet = T))
+```
+
+
+```{r}
+# Gross volume
+
+# S1 coefs
+coefs_VOLCFGRS_S1 <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "S_coefs_1") |> 
+  mutate(species = as.numeric(ifelse(species == "Other", NA, species))) |> 
+  rename(COEF_TBL_SP = species)
+
+config_VOLCFGRS_S1 <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "S_config") |> 
+    filter(COEF_TABLE == "S_coefs_1") 
+
+coefs_VOLCFGRS_S1 <- inner_join(coefs_VOLCFGRS_S1, config_VOLCFGRS_S1, 
+                                by = "COEF_TBL_SP", relationship = "many-to-many") |>
+  rename(SPCD = SPECIES_NUM) |>
+  relocate(SPCD) |> 
+  select(-c(COEF_TBL_SP, CONFIG_ID:COEF_TABLE)) |> 
+  arrange(SPCD, size) |> 
+  mutate(B2 = 0, B3 = 0, B4 = 0, B5 = 0, B6 = 0, B7 = 0, B8 = 0, B9 = 0, B10 = 0, B11 = 0, B12 = 0)
+coefs_VOLCFGRS_S1
+
+# S2 coefs
+coefs_VOLCFGRS_S2 <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "S_coefs_2") |> 
+  rename(COEF_TBL_SP = Species) |> 
+  filter(`# of stems` == 1)
+
+config_VOLCFGRS_S2 <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "S_config") |> 
+    filter(COEF_TABLE == "S_coefs_2") 
+
+coefs_VOLCFGRS_S2 <- inner_join(coefs_VOLCFGRS_S2, config_VOLCFGRS_S2, 
+                                by = "COEF_TBL_SP") |>
+  rename(SPCD = SPECIES_NUM) |>
+  mutate(size = "all") |>
+      relocate(SPCD, size) |> 
+  select(-c(COEF_TBL_SP, `# of stems`, CONFIG_ID:COEF_TABLE)) |> 
+  arrange(SPCD, size) |> 
+  mutate(B0 = 0, B7 = 0, B8 = 0, B9 = 0, B10 = 0, B11 = 0, B12 = 0) |> 
+  relocate(SPCD, size, B0)
+
+coefs_VOLCFGRS_S2
+
+# RMRS3 coefs
+coefs_VOLCFGRS_RMRS3 <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "RMRS_coefs_3") |> 
+  rename(COEF_TBL_SP = Species) 
+
+config_VOLCFGRS_RMRS3 <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "S_config") |> 
+    filter(COEF_TABLE == "RMRS_coefs_3") 
+
+coefs_VOLCFGRS_RMRS3 <- inner_join(coefs_VOLCFGRS_RMRS3, config_VOLCFGRS_RMRS3, 
+                                by = "COEF_TBL_SP") |>
+  rename(SPCD = SPECIES_NUM) |>
+  mutate(size = "all") |>
+  relocate(SPCD, size) |> 
+  select(-c(COEF_TBL_SP, CONFIG_ID:COEF_TABLE)) |> 
+  arrange(SPCD, size) |> 
+  mutate(B4 = 0, B5 = 0, B6 = 0, B7 = 0, B8 = 0, B9 = 0, B10 = 0, B11 = 0, B12 = 0)  
+coefs_VOLCFGRS_RMRS3
+
+# RMRS8 coefs
+coefs_VOLCFGRS_RMRS8 <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "RMRS_coefs_8") |> 
+  rename(COEF_TBL_SP = Species) 
+
+config_VOLCFGRS_RMRS8 <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "S_config") |> 
+    filter(COEF_TABLE == "RMRS_coefs_8") 
+
+coefs_VOLCFGRS_RMRS8 <- inner_join(coefs_VOLCFGRS_RMRS8, config_VOLCFGRS_RMRS8, 
+                                by = "COEF_TBL_SP") |>
+  rename(SPCD = SPECIES_NUM) |>
+  mutate(size = "all") |>
+  relocate(SPCD, size) |> 
+  select(-c(COEF_TBL_SP, CONFIG_ID:COEF_TABLE)) |> 
+  mutate(B0 = 0, B7 = 0, B8 = 0, B9 = 0, B10 = 0, B11 = 0, B12 = 0)  |> 
+  relocate(SPCD, size, B0) |> 
+  arrange(SPCD, size)
+
+# RMRS9 coefs
+coefs_VOLCFGRS_RMRS9 <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "RMRS_coefs_9") |> 
+  rename(COEF_TBL_SP = Species) 
+
+config_VOLCFGRS_RMRS9 <- read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
+                   sheet = "S_config") |> 
+    filter(COEF_TABLE == "RMRS_coefs_9") 
+
+coefs_VOLCFGRS_RMRS9 <- inner_join(coefs_VOLCFGRS_RMRS9, config_VOLCFGRS_RMRS9, 
+                                by = "COEF_TBL_SP") |>
+  rename(SPCD = SPECIES_NUM) |>
+  mutate(size = "all") |>
+  relocate(SPCD, size) |> 
+  select(-c(COEF_TBL_SP, CONFIG_ID:COEF_TABLE)) |> 
+  mutate(B0 = 0)  |> 
+  relocate(SPCD, size, B0) |> 
+  arrange(SPCD, size)
+
+coefs_VOLCFGRS <- rbind(coefs_VOLCFGRS_S1, coefs_VOLCFGRS_S2, coefs_VOLCFGRS_RMRS3, coefs_VOLCFGRS_RMRS8, coefs_VOLCFGRS_RMRS9)
+
+# Reference Species table
+ref_spp <- read_csv(paste0(my_dir, "nrs_gtr88/REF_SPECIES.csv")) 
+
+# Domke et al. 2011 Standing dead reductions (their Table 2)
+dead <- tribble(
+ ~SFTWD_HRDWD, ~DECAYCD, ~DENS_RED, ~SLA_TOP, ~SLA_BARK, ~SLA_BOLE, ~SLA_STUMP, ~SLA_ROOTS,
+ # Hardwoods
+ "H", 0, 1, 1, 1, 1, 1, 1,
+ "H", 1, 0.970, 1, 0.92, 1, 1, 1, 
+ "H", 2, 0.750, 0.50, 0.66, 1, 1, 0.95,
+ "H", 3, 0.540, 0.20, 0.39, 1, 1, 0.80,
+ "H", 4, 0.613, 0.10, 0.21, 1, 1, 0.65,
+ "H", 5, 0.613, 0, 0, 1, 1, 0.50,
+ # Softwoods
+ "S", 0, 1, 1, 1, 1, 1, 1,
+ "S", 1, 0.892, 1, 0.92, 1, 1, 1,
+ "S", 2, 0.831, 0.50, 0.66, 1, 1, 0.95,
+ "S", 3, 0.591, 0.20, 0.39, 1, 1, 0.80,
+ "S", 4, 0.433, 0.10, 0.21, 1, 1, 0.65,
+ "S", 5, 0.433, 0, 0, 1, 1, 0.50
+ )
+```
+
+```{r}
+tree <- sdt_tree
+
+special_spp <- c(58, 59, 69, 106, 140, 141, 
+                61, 63, 66, 303, 321, 755, 756, 758, 810, 843, 846, 867, 8513,
+                122,
+                202)
+
+tree <- tree |> 
+  mutate(size = ifelse(DIA >= 1.0 & DIA < 5.0 & STDORGCD == 1 & SPCD %in% c(111, 131), "planted sapling", 
+                       ifelse(DIA >= 1.0 & DIA < 5.0, "sapling", 
+                              ifelse(SPCD < 300 & DIA >= 5.0 & DIA < 9.0, "poles",
+                                     ifelse(SPCD >= 300 & DIA >= 5.0 & DIA < 11.0, "poles",
+                                            ifelse(SPCD < 300 & DIA >= 9.0, "sawtimber",
+                                                   ifelse(SPCD >= 300 & DIA >= 11.0, "sawtimber", "foo")))))),
+         size = ifelse(SPCD %in% special_spp, "all", size))
+tree
+
+tree <- tree |> 
+  mutate(SPCD = ifelse(SPCD %in% c(8944, 357, 7845, 8449, 8563, 6003, 7455, 
+                                   6511, 7469, 6434, 6791, 8441, 6696, 6782,
+                                   5260, 6748, 8427, 8421, 770, 6708,
+                                    8487, 6799, 8612, 7578, 91), 999, SPCD)) |>
+ inner_join(coefs_VOLCFGRS, by = c("SPCD", "size")) 
+tree
+
+tree_filter <- tree |> 
+  filter(is.na(B1))
+
+unique(tree_filter$SPCD)
+
+tree <- tree |> 
+  rowwise() |> 
+          # 1. Gross volume
+  mutate(VOLCFGRS = calc_VOLCFGRS(SPCD = SPCD, DBH = DIA, HT = HT, DRC = DIA, 
+                                  B0 = B0, B1 = B1, B2 = B2, B3 = B3, B4 = B4, B5 = B5, B6 = B6,
+                                  B7 = B7, B8 = B8, B9 = B9, B10 = B10, B11 = B11, B12 = B12),
+         # 2. Sound volume
+         VOLCFSND = calc_VOLCFSND(VOLCFGRS = VOLCFGRS, PCT_ROTTEN = CULL)) |> 
+    select(-c(B0:B12))
+tree$VOLCFGRS
+tree$VOLCFSND
+```
+
+```{r}
+tree <- inner_join(tree, ref_spp, by = "SPCD") 
+
+tree <- inner_join(tree, dead, by = c("SFTWD_HRDWD", "DECAYCD")) 
+
+tree <- tree |> 
+  rowwise() |> 
+  # 3. DRYBIO_BOLE
+  mutate(DRYBIO_BOLE = calc_DRYBIO_BOLE(SPCD = SPCD, VOLCFSND = VOLCFSND, 
+                                        WOOD_SPGR_GREENVOL_DRYWT = WOOD_SPGR_GREENVOL_DRYWT, 
+                                        BARK_VOL_PCT = BARK_VOL_PCT,
+                                        BARK_SPGR_GREENVOL_DRYWT = BARK_SPGR_GREENVOL_DRYWT,
+                                        DENS_RED = DENS_RED, 
+                                        SLA_BOLE = SLA_BOLE, 
+                                        SLA_BARK = SLA_BARK),
+      # 4. CRM adjustment factor   
+      CRM_AF = calc_CRM_ADJ(JENKINS_SPGRPCD = JENKINS_SPGRPCD, 
+                               DRYBIO_BOLE = DRYBIO_BOLE, 
+                               DBH = DIA),
+      # 5. Stump volume and biomass
+      DRYBIO_STUMP = calc_DRYBIO_STUMP(SPCD = SPCD, 
+                               DBH = DIA,
+                               CRM_AF = CRM_AF,
+                               RAILE_STUMP_DOB_B1 = RAILE_STUMP_DOB_B1, 
+                               RAILE_STUMP_DIB_B1 = RAILE_STUMP_DIB_B1, 
+                               RAILE_STUMP_DIB_B2 = RAILE_STUMP_DIB_B2,
+                               WOOD_SPGR_GREENVOL_DRYWT = WOOD_SPGR_GREENVOL_DRYWT, 
+                               BARK_SPGR_GREENVOL_DRYWT = BARK_SPGR_GREENVOL_DRYWT,
+                               SLA_STUMP = SLA_STUMP),
+      # 6. Top and branch biomass
+      DRYBIO_TOP = calc_TOP_BRANCH(JENKINS_SPGRPCD = JENKINS_SPGRPCD, 
+                                        DBH = DIA, 
+                                        DRYBIO_STUMP = DRYBIO_STUMP, 
+                                        DRYBIO_BOLE = DRYBIO_BOLE,
+                                      SLA_TOP = SLA_TOP),
+      # 7. Total aboveground biomass
+      BIOMASS = calc_BIOMASS(DBH = DIA,
+                             JENKINS_SPGRPCD =JENKINS_SPGRPCD,
+                             DRYBIO_BOLE = DRYBIO_BOLE, 
+                                DRYBIO_STUMP = DRYBIO_STUMP, 
+                                DRYBIO_TOP = DRYBIO_TOP,
+                             DENS_RED = DENS_RED, 
+                             SLA_TOP = SLA_TOP, 
+                             SLA_BOLE = SLA_BOLE, 
+                             SLA_BARK = SLA_BARK),
+      # 8. Total aboveground carbon
+      CARBON = calc_CARBON(BIOMASS = BIOMASS)
+      ) 
+
+tree$VOLCFGRS
+tree$VOLCFSND
+tree$CRM_AF
+tree$DRYBIO_BOLE
+tree$DRYBIO_STUMP
+tree$DRYBIO_TOP
+tree$BIOMASS
+tree$CARBON
+```
