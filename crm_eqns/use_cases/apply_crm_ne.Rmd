@@ -13,7 +13,7 @@ library(readxl)
 
 ```{r}
 # Set working directory
-my_dir <-".../crm_eqns/"
+my_dir <-"C:/Users/matt/Documents/Arbor/Projects/nsvb/analysis/crm_eqns/"
 ```
 
 ```{r}
@@ -92,12 +92,7 @@ tree <- tree |>
                                         BARK_VOL_PCT = BARK_VOL_PCT,
                                         BARK_SPGR_GREENVOL_DRYWT = BARK_SPGR_GREENVOL_DRYWT,
                                         DENS_RED = DENS_RED, 
-                                        # DENS_RED = ifelse(DECAYCD == 1, STANDING_DEAD_DECAY_RATIO1,
-                                        #                   ifelse(DECAYCD == 2, STANDING_DEAD_DECAY_RATIO2,
-                                        #                          ifelse(DECAYCD == 3, STANDING_DEAD_DECAY_RATIO3,
-                                        #                                 ifelse(DECAYCD == 4, STANDING_DEAD_DECAY_RATIO4,
-                                        #                                        ifelse(DECAYCD == 5, STANDING_DEAD_DECAY_RATIO5, 1))))),
-                                         SLA_BOLE = SLA_BOLE, 
+                                        SLA_BOLE = SLA_BOLE, 
                                         SLA_BARK = SLA_BARK),
       # 4. CRM adjustment factor   
       CRM_AF = calc_CRM_ADJ(JENKINS_SPGRPCD = JENKINS_SPGRPCD, 

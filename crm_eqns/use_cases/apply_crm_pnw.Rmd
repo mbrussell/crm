@@ -13,7 +13,7 @@ library(readxl)
 
 ```{r}
 # Set working directory
-my_dir <-".../crm_eqns/"
+my_dir <-"C:/Users/matt/Documents/Arbor/Projects/nsvb/analysis/crm_eqns/"
 ```
 
 ```{r}
@@ -23,7 +23,6 @@ source(purl(paste0(my_dir, "volume/volume_pnw.Rmd"), quiet = T))
 # Load CRM functions
 source(purl(paste0(my_dir, "crm/crm.Rmd"), quiet = T))
 ```
-
 
 ```{r}
 # Gross volume
@@ -68,7 +67,7 @@ coefs_PNW_4 <- read_coefs(sheet_name = "PNW_coefs_4") |>
   relocate(relocate_order)  
 
 coefs_PNW_5 <- read_coefs(sheet_name = "PNW_coefs_5") |> 
-        mutate(B0 = 0, B5 = NA, B6 = NA, B7 = NA, B8 = NA, B9 = NA, B10 = NA,
+        mutate(B0 = NA, B5 = NA, B6 = NA, B7 = NA, B8 = NA, B9 = NA, B10 = NA,
          B11 = NA, B12 = NA,  B13 = NA, B14 = NA, B15 = NA, B16 = NA,
          B17 = NA, B18 = NA, B19 = NA, B20 = NA, B21 = NA, B22 = NA,
          B23 = NA, B24 = NA, B25 = NA, B26 = NA) |> 
@@ -89,14 +88,14 @@ coefs_PNW_7 <- read_coefs(sheet_name = "PNW_coefs_7") |>
   relocate(relocate_order) 
 
 coefs_PNW_8 <- read_coefs(sheet_name = "PNW_coefs_8")  |> 
-  mutate(B0 = NA, B4 = 0,  B5 = NA, B6 = NA, B7 = NA, B8 = NA, B9 = NA, B10 = NA,
+  mutate(B0 = NA, B4 = NA,  B5 = NA, B6 = NA, B7 = NA, B8 = NA, B9 = NA, B10 = NA,
          B11 = NA, B12 = NA,  B13 = NA, B14 = NA, B15 = NA, B16 = NA,
          B17 = NA, B18 = NA, B19 = NA, B20 = NA, B21 = NA, B22 = NA,
          B23 = NA, B24 = NA, B25 = NA, B26 = NA) |> 
   relocate(relocate_order)  
 
 coefs_PNW_9 <- read_coefs(sheet_name = "PNW_coefs_9") |> 
-  mutate(B0 = NA, B4 = 0,  B5 = NA, B6 = NA, B7 = NA, B8 = NA, B9 = NA, B10 = NA,
+  mutate(B0 = NA, B4 = NA,  B5 = NA, B6 = NA, B7 = NA, B8 = NA, B9 = NA, B10 = NA,
          B11 = NA, B12 = NA,  B13 = NA, B14 = NA, B15 = NA, B16 = NA,
          B17 = NA, B18 = NA, B19 = NA, B20 = NA, B21 = NA, B22 = NA,
          B23 = NA, B24 = NA, B25 = NA, B26 = NA) |> 
@@ -116,7 +115,7 @@ coefs_PNW_11 <- read_coefs(sheet_name = "PNW_coefs_11") |>
   relocate(relocate_order) 
 
 coefs_PNW_12 <- read_coefs(sheet_name = "PNW_coefs_12") |> 
-   mutate(B0 = NA, B12 = 0, B13 = NA, B14 = NA, B15 = NA, B16 = NA,
+   mutate(B0 = NA, B12 = NA, B13 = NA, B14 = NA, B15 = NA, B16 = NA,
          B17 = NA, B18 = NA, B19 = NA, B20 = NA, B21 = NA, B22 = NA,
          B23 = NA, B24 = NA, B25 = NA, B26 = NA) |> 
   relocate(relocate_order) 
@@ -126,7 +125,7 @@ coefs_PNW_13 <- read_coefs(sheet_name = "PNW_coefs_13") |>
   relocate(relocate_order) 
 
 coefs_PNW_14 <- read_coefs(sheet_name = "PNW_coefs_14") |> 
-   mutate(B0 = NA, B10 = 0, B11 = 0, B12 = 0, B13 = NA, B14 = NA, B15 = NA, B16 = NA,
+   mutate(B0 = NA, B10 = NA, B11 = NA, B12 = NA, B13 = NA, B14 = NA, B15 = NA, B16 = NA,
          B17 = NA, B18 = NA, B19 = NA, B20 = NA, B21 = NA, B22 = NA,
          B23 = NA, B24 = NA, B25 = NA, B26 = NA) |> 
   relocate(relocate_order) 
@@ -144,7 +143,7 @@ coefs_PNW_16 <- read_coefs(sheet_name = "PNW_coefs_16") |>
   relocate(relocate_order) 
 
 coefs_PNW_17 <- read_coefs(sheet_name = "PNW_coefs_17") |> 
-   mutate(B9 = 0, B10 = 0, B11 = 0, B12 = NA, B13 = NA, B14 = NA, B15 = NA, B16 = NA,
+   mutate(B9 = NA, B10 = NA, B11 = NA, B12 = NA, B13 = NA, B14 = NA, B15 = NA, B16 = NA,
          B17 = NA, B18 = NA, B19 = NA, B20 = NA, B21 = NA, B22 = NA,
          B23 = NA, B24 = NA, B25 = NA, B26 = NA) |> 
   relocate(relocate_order) 
@@ -156,7 +155,7 @@ coefs_PNW_21 <- read_coefs(sheet_name = "PNW_coefs_21") |>
   relocate(relocate_order) 
 
 coefs_RMRS_5 <- read_coefs(sheet_name = "RMRS_coefs_5") |> 
-  mutate(B0 = NA,  B4 = 0, B5 = 0, B6 = 0, B7 = 0, B8 = 0, B9 = 0, B10 = 0,
+  mutate(B4 = NA, B5 = NA, B6 = NA, B7 = NA, B8 = NA, B9 = NA, B10 = NA,
          B11 = NA, B12 = NA,  B13 = NA, B14 = NA, B15 = NA, B16 = NA,
          B17 = NA, B18 = NA, B19 = NA, B20 = NA, B21 = NA, B22 = NA,
          B23 = NA, B24 = NA, B25 = NA, B26 = NA) |> 
@@ -165,14 +164,20 @@ coefs_RMRS_5 <- read_coefs(sheet_name = "RMRS_coefs_5") |>
 coefs_RMRS_6 <- read_coefs(sheet_name = "RMRS_coefs_6") |> 
   filter(`# of stems` == 1) |> 
   select(-`# of stems`) |>
-  mutate(B0 = NA, B7 = 0, B8 = 0, B9 = 0, B10 = 0,
+  mutate(B0 = NA, B7 = NA, B8 = NA, B9 = NA, B10 = NA,
          B11 = NA, B12 = NA,  B13 = NA, B14 = NA, B15 = NA, B16 = NA,
          B17 = NA, B18 = NA, B19 = NA, B20 = NA, B21 = NA, B22 = NA,
          B23 = NA, B24 = NA, B25 = NA, B26 = NA) |> 
   relocate(relocate_order) 
 
 coefs_PNW_sp <- rbind(coefs_PNW_1, coefs_PNW_2, coefs_PNW_3, coefs_PNW_4,
-                    coefs_PNW_15, coefs_PNW_17, coefs_PNW_21, coefs_RMRS_5, coefs_RMRS_6)
+                      coefs_PNW_9, 
+                      coefs_PNW_15, coefs_PNW_17, coefs_PNW_21, coefs_RMRS_5, coefs_RMRS_6)
+
+coefs_PNW_sp_all <- rbind(coefs_PNW_5, coefs_PNW_6, coefs_PNW_7, coefs_PNW_8,
+                      coefs_PNW_10, coefs_PNW_11, coefs_PNW_12,
+                      coefs_PNW_13, coefs_PNW_14,
+                      coefs_PNW_16)
 ```
 
 
@@ -181,6 +186,7 @@ coefs_PNW_sp <- rbind(coefs_PNW_1, coefs_PNW_2, coefs_PNW_3, coefs_PNW_4,
 read_config <- function(sheet_name){
   read_excel(paste0(my_dir, "nrs_gtr88/volcfgrs_eqn_coefs.xlsx"), 
                    sheet = sheet_name) |> 
+    #mutate(COEF_TBL_SP = as.character(COEF_TBL_SP)) |>
     rename(SPCD = SPECIES_NUM)
 }
 
@@ -192,164 +198,150 @@ config_OR_JJ <- read_config(sheet_name = "OR_JJ_config")
 config_WA_E <- read_config(sheet_name = "WA_E_config") 
 config_WA_W <- read_config(sheet_name = "WA_W_config") 
 config_WA_CF <- read_config(sheet_name = "WA_CF_config")
+```
 
+```{r}
 ######################################
 # Join coefficients and config files
-
-create_coefs_all <- function(coefs){
-      coefs |> 
-    mutate(state = NA,
-             region = NA,
-             COEF_TBL_SP  = as.numeric(ifelse(COEF_TBL_SP == "All", NA, NA)),
-             SPCD = NA) |>
-  relocate(state, region, COEF_TABLE, COEF_TBL_SP, SPCD)
-}
-
-sp_coefs_5 <- create_coefs_all(coefs = coefs_PNW_5)
-sp_coefs_6 <- create_coefs_all(coefs = coefs_PNW_6)
-sp_coefs_7 <- create_coefs_all(coefs = coefs_PNW_7)
-sp_coefs_8 <- create_coefs_all(coefs = coefs_PNW_8)
-sp_coefs_9 <- create_coefs_all(coefs = coefs_PNW_9)
-sp_coefs_10 <- create_coefs_all(coefs = coefs_PNW_10)
-sp_coefs_11 <- create_coefs_all(coefs = coefs_PNW_11)
-sp_coefs_12 <- create_coefs_all(coefs = coefs_PNW_12)
-sp_coefs_13 <- create_coefs_all(coefs = coefs_PNW_13)
-sp_coefs_14 <- create_coefs_all(coefs = coefs_PNW_14)
-sp_coefs_16 <- create_coefs_all(coefs = coefs_PNW_16)
-
-pnw_sp <- read_excel(paste0(my_dir, "pnw_crm_species.xlsx"))
+# 
+# pnw_sp <- read_excel(paste0(my_dir, "pnw_crm_species.xlsx"))
+# pnw_sp
+# 
+# sp_coefs_all <- full_join(coefs_PNW_sp, pnw_sp, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+#   relocate(COEF_TABLE, COEF_TBL_SP, SPCD) 
 ```
 
 ```{r}
-sp_coefs_5 <- as_tibble(cbind(pnw_sp, sp_coefs_5[1, 6:32])) |> 
-  filter(COEF_TABLE == "PNW_coefs_5")
-sp_coefs_6 <- as_tibble(cbind(pnw_sp, sp_coefs_6[1, 6:32])) |> 
-  filter(COEF_TABLE == "PNW_coefs_6")
-sp_coefs_7 <- as_tibble(cbind(pnw_sp, sp_coefs_7[1, 6:32])) |> 
-  filter(COEF_TABLE == "PNW_coefs_7")
-sp_coefs_8 <- as_tibble(cbind(pnw_sp, sp_coefs_8[1, 6:32])) |> 
-  filter(COEF_TABLE == "PNW_coefs_8")
-sp_coefs_9 <- as_tibble(cbind(pnw_sp, sp_coefs_9[1, 6:32])) |> 
-  filter(COEF_TABLE == "PNW_coefs_9")
-sp_coefs_10 <- as_tibble(cbind(pnw_sp, sp_coefs_10[1, 6:32])) |> 
-  filter(COEF_TABLE == "PNW_coefs_10")
-sp_coefs_11 <- as_tibble(cbind(pnw_sp, sp_coefs_11[1, 6:32])) |> 
-  filter(COEF_TABLE == "PNW_coefs_11")
-sp_coefs_12 <- as_tibble(cbind(pnw_sp, sp_coefs_12[1, 6:32])) |> 
-  filter(COEF_TABLE == "PNW_coefs_12")
-sp_coefs_13 <- as_tibble(cbind(pnw_sp, sp_coefs_13[1, 6:32])) |> 
-  filter(COEF_TABLE == "PNW_coefs_13")
-sp_coefs_14 <- as_tibble(cbind(pnw_sp, sp_coefs_14[1, 6:32])) |> 
-  filter(COEF_TABLE == "PNW_coefs_14")
-sp_coefs_16 <- as_tibble(cbind(pnw_sp, sp_coefs_16[1, 6:32])) |> 
-  filter(COEF_TABLE == "PNW_coefs_16")
-
-sp_coefs_all <- rbind(sp_coefs_5, sp_coefs_6, sp_coefs_7, sp_coefs_8, 
-                      sp_coefs_9, sp_coefs_10, sp_coefs_11, sp_coefs_12, 
-                      sp_coefs_13, sp_coefs_14, sp_coefs_16)
-```
-
-```{r}
-join_coefs <- function(coefs, config, state, region){
-  inner_join(coefs, config, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
-      mutate(state = state,
-             region = region) |>
-  relocate(state, region, COEF_TABLE, COEF_TBL_SP, SPCD)
-}
-
 # California - state
-sp_CA_state <- join_coefs(coefs = coefs_PNW_sp,
-                          config = config_CA,
-                          state = "CA",
-                          region = "state") |>
-  select(state:B26) |>
-  rbind(sp_coefs_all) |> 
-  filter(state == "CA" & region == "state")
+sp_coefs_CA_state_1 <- inner_join(config_CA, coefs_PNW_sp, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, COEF_TBL_SP, SPCD)
+sp_coefs_CA_state_1
 
-sp_CA_state
+sp_coefs_CA_state_2 <- config_CA |> 
+  mutate(COEF_TBL_SP = "All") |> 
+  inner_join(coefs_PNW_sp_all, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, SPCD)
+sp_coefs_CA_state_2
+
+sp_CA_state <- rbind(sp_coefs_CA_state_1, sp_coefs_CA_state_2) |> 
+               mutate(state = "CA",
+                      region = "state") |> 
+  relocate(state, region)
 
 # California - mixed-conifers
-sp_CA_mc <- join_coefs(coefs = coefs_PNW_sp,
-                          config = config_CA_MC,
-                          state = "CA",
-                          region = "mc") |>
-  select(state:B26) |>
-  rbind(sp_coefs_all) |> 
-  filter(state == "CA" & region == "mc")
+sp_coefs_CA_MC_1 <- inner_join(config_CA_MC, coefs_PNW_sp, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, COEF_TBL_SP, SPCD)
+sp_coefs_CA_MC_1
 
-sp_CA_mc
+sp_coefs_CA_MC_2 <- config_CA_MC |> 
+  mutate(COEF_TBL_SP = "All") |> 
+  inner_join(coefs_PNW_sp_all, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, SPCD)
+sp_coefs_CA_MC_2
 
+sp_CA_mc <- rbind(sp_coefs_CA_MC_1, sp_coefs_CA_MC_2) |> 
+               mutate(state = "CA",
+                      region = "mc") |> 
+  relocate(state, region)
 
 # Oregon - east
-sp_OR_east <- join_coefs(coefs = coefs_PNW_sp,
-                          config = config_OR_E,
-                          state = "OR",
-                          region = "east") |>
-  select(state:B26) |>
-  rbind(sp_coefs_all) |> 
-  filter(state == "OR" & region == "east")
+sp_coefs_OR_E_1 <- inner_join(config_OR_E, coefs_PNW_sp, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, COEF_TBL_SP, SPCD)
+sp_coefs_OR_E_1
 
-sp_OR_east
+sp_coefs_OR_E_2 <- config_OR_E |> 
+  mutate(COEF_TBL_SP = "All") |> 
+  inner_join(coefs_PNW_sp_all, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, SPCD)
+sp_coefs_OR_E_2
 
+sp_OR_east <- rbind(sp_coefs_OR_E_1, sp_coefs_OR_E_2) |> 
+               mutate(state = "OR",
+                      region = "east") |> 
+  relocate(state, region)
 
-# Oregon - west
-sp_OR_west <- join_coefs(coefs = coefs_PNW_sp,
-                          config = config_OR_W,
-                          state = "OR",
-                          region = "west") |>
-  select(state:B26) |>
-  rbind(sp_coefs_all) |> 
-  filter(state == "OR" & region == "west")
+# # Oregon - west
 
-sp_OR_west
+sp_coefs_OR_W_1 <- inner_join(config_OR_W, coefs_PNW_sp, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, COEF_TBL_SP, SPCD)
+sp_coefs_OR_W_1
 
+sp_coefs_OR_W_2 <- config_OR_W |> 
+  mutate(COEF_TBL_SP = "All") |> 
+  inner_join(coefs_PNW_sp_all, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, SPCD)
+sp_coefs_OR_W_2
+
+sp_OR_west <- rbind(sp_coefs_OR_W_1, sp_coefs_OR_W_2) |> 
+               mutate(state = "OR",
+                      region = "west") |> 
+  relocate(state, region)
 
 # Oregon - Jackson and Josephine Counties, OR
-sp_OR_jj <- join_coefs(coefs = coefs_PNW_sp,
-                          config = config_OR_JJ,
-                          state = "OR",
-                          region = "jj") |>
-  select(state:B26) |>
-  rbind(sp_coefs_all) |> 
-  filter(state == "OR" & region == "jj")
+sp_coefs_OR_jj_1 <- inner_join(config_OR_JJ, coefs_PNW_sp, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, COEF_TBL_SP, SPCD)
+sp_coefs_OR_jj_1
 
-sp_OR_jj
+sp_coefs_OR_jj_2 <- config_OR_JJ |> 
+  mutate(COEF_TBL_SP = "All") |> 
+  inner_join(coefs_PNW_sp_all, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, SPCD)
+sp_coefs_OR_jj_2
 
+sp_OR_jj <- rbind(sp_coefs_OR_jj_1, sp_coefs_OR_jj_2) |> 
+               mutate(state = "OR",
+                      region = "jj") |> 
+  relocate(state, region)
 
 # Washington - east
-sp_WA_east <- join_coefs(coefs = coefs_PNW_sp,
-                          config = config_WA_E,
-                          state = "WA",
-                          region = "east") |>
-  select(state:B26) |>
-  rbind(sp_coefs_all) |> 
-  filter(state == "WA" & region == "east")
+sp_coefs_WA_E_1 <- inner_join(config_WA_E, coefs_PNW_sp, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, COEF_TBL_SP, SPCD)
+sp_coefs_WA_E_1
 
-sp_WA_east
+sp_coefs_WA_E_2 <- config_WA_E |> 
+  mutate(COEF_TBL_SP = "All") |> 
+  inner_join(coefs_PNW_sp_all, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, SPCD)
+sp_coefs_WA_E_2
 
+sp_WA_east <- rbind(sp_coefs_WA_E_1, sp_coefs_WA_E_2) |> 
+               mutate(state = "WA",
+                      region = "east") |> 
+  relocate(state, region)
 
 # Washington - west
-sp_WA_west <- join_coefs(coefs = coefs_PNW_sp,
-                          config = config_WA_W,
-                          state = "WA",
-                          region = "west") |>
-  select(state:B26) |>
-  rbind(sp_coefs_all) |> 
-  filter(state == "WA" & region == "west")
+sp_coefs_WA_W_1 <- inner_join(config_WA_W, coefs_PNW_sp, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, COEF_TBL_SP, SPCD)
+sp_coefs_WA_W_1
 
-sp_WA_west
+sp_coefs_WA_W_2 <- config_WA_W |> 
+  mutate(COEF_TBL_SP = "All") |> 
+  inner_join(coefs_PNW_sp_all, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, SPCD)
+sp_coefs_WA_W_2
+
+sp_WA_west <- rbind(sp_coefs_WA_W_1, sp_coefs_WA_W_2) |> 
+               mutate(state = "WA",
+                      region = "west") |> 
+  relocate(state, region)
 
 
 # Washington - CF counties
-sp_WA_cf <- join_coefs(coefs = coefs_PNW_sp,
-                          config = config_WA_CF,
-                          state = "WA",
-                          region = "cf") |>
-  select(state:B26) |>
-  rbind(sp_coefs_all) |> 
-  filter(state == "WA" & region == "cf")
 
-sp_WA_cf
+sp_coefs_WA_CF_1 <- inner_join(config_WA_CF, coefs_PNW_sp, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, COEF_TBL_SP, SPCD)
+sp_coefs_WA_CF_1
+
+sp_coefs_WA_CF_2 <- config_WA_CF |> 
+  mutate(COEF_TBL_SP = "All") |> 
+  inner_join(coefs_PNW_sp_all, by = c("COEF_TABLE", "COEF_TBL_SP")) |> 
+  relocate(COEF_TABLE, SPCD)
+sp_coefs_WA_CF_2
+
+sp_WA_cf <- rbind(sp_coefs_WA_CF_1, sp_coefs_WA_CF_2) |> 
+               mutate(state = "WA",
+                      region = "cf") |> 
+  relocate(state, region)
 
 sp_all <- rbind(sp_CA_state, sp_CA_mc, 
                 sp_OR_east, sp_OR_west, sp_OR_jj, 
@@ -357,29 +349,8 @@ sp_all <- rbind(sp_CA_state, sp_CA_mc,
 ```
 
 ```{r}
-# tree <- tribble(
-#   ~state, ~region, ~SPCD, ~DIA, ~HT,
-#   "CA", "state", 202, 5.2, 42,
-#   "CA", "mc", 202, 5.2, 42,
-#   "OR", "east", 202, 5.2, 42,
-#   "OR", "west", 202, 5.2, 42,
-#   "OR", "jj", 202, 5.2, 42,
-#   "WA", "east", 202, 5.2, 42,
-#   "WA", "west", 202, 5.2, 42,
-#   "WA", "cf", 202, 5.2, 42,
-#   ) |>
-#   inner_join(sp_all, by = c("state", "region", "SPCD"))
-```
-
-```{r}
 tree <- sdt_tree 
 table(tree$VOL_LOC_GRP)
-# tree <- tree |> 
-#   mutate(state = toupper(state),
-#         eco_province = str_sub(ECOSUBCD, end = -3),
-#         eco_division = str_replace(eco_province, ".$", "0"))
-
-# eco_div <- read_excel(paste0(my_dir, "pnw_ecoregion_key.xlsx"))
 
 volume_key <- read_excel(paste0(my_dir, "pnw_volume_key.xlsx"))
 
@@ -392,14 +363,17 @@ tree <- tree |>
 
 ```{r}
 tree <- tree |> 
-  mutate(SPCD = ifelse(state == "WA" & region == "west" & SPCD %in% c(212, 927), 999, SPCD),
+   mutate(SPCD = ifelse(state == "WA" & region == "west" & SPCD %in% c(212, 927), 999, SPCD),
          SPCD = ifelse(state == "OR" & region == "west" & SPCD == 771, 999, SPCD)) |> 
-  left_join(sp_all, by = c("state", "region", "SPCD"))
-
-tree_eg <- tree |> 
-   select(state, region, SPCD, COEF_TABLE)
+   left_join(sp_all, by = c("state", "region", "SPCD"))
+# 
+ tree_eg <- tree |> 
+   select(state, region, SPCD, DIA, HT, STANDING_DEAD_CD, DECAYCD, CULL,
+          COEF_TABLE, B0:B26) |> 
+   filter(state == "OR" & region == "west" & SPCD == 81)
 
 tree <- tree |> 
+  rowwise() |> 
   mutate(VOLCFGRS = ifelse(COEF_TABLE == "PNW_coefs_1", 
                            calc_VOLCFGRS_pills_kirk(SPCD = SPCD, DBH = DIA, HT = HT,
                                      B1 = B1, B2 = B2, B3 = B3), 
@@ -420,7 +394,7 @@ tree <- tree |>
                                        B1 = B1, B2 = B2, B3 = B3), 
                     ifelse(COEF_TABLE == "PNW_coefs_7", 
                            calc_VOLCFGRS_mac_berg_3(SPCD = SPCD, DBH = DIA, HT = HT, 
-                                                     B0 = B0, B1 = B1, B2 = B2, B3 = B3), 
+                                                     B1 = B1, B2 = B2, B3 = B3), 
                     ifelse(COEF_TABLE == "PNW_coefs_8", 
                            calc_VOLCFGRS_mac_berg_4(SPCD = SPCD, DBH = DIA, HT = HT, 
                                                      B1 = B1, B2 = B2, B3 = B3),
@@ -474,8 +448,10 @@ tree <- tree |>
                                        B0 = B0, B1 = B1, B2 = B2, B3 = B3, B4 = B4,
                                        B5 = B5, B6 = B6, B7 = B7, B8 = B8, B9 = B9,
                                        B10 = B10), 999))))))))))))))))))) 
-```
 
+#tree2 <- tree[11614,]
+```
+  
 ```{r}
 # Reference Species table
 ref_spp <- read_csv(paste0(my_dir, "nrs_gtr88/REF_SPECIES.csv")) 
@@ -572,7 +548,9 @@ tree$DRYBIO_TOP
 tree$BIOMASS
 tree$CARBON
 
-tree_eg <- tree |> 
-  select(state, region, SPCD, DIA, HT, STANDING_DEAD_CD, DECAYCD, CULL,
-         COEF_TABLE, VOLCFGRS, VOLCFSND, CARBON)
+ tree_eg <- tree |> 
+   select(state, region, SPCD, DIA, HT, STANDING_DEAD_CD, DECAYCD, CULL,
+          COEF_TABLE, VOLCFGRS, VOLCFSND, CARBON,
+          B0:B26) |> 
+   filter(state == "OR" & region == "east" & SPCD == 202)
 ```

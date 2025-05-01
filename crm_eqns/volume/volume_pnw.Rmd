@@ -9,7 +9,7 @@ output: html_document
 # 1. Gross volume
 
 # Brackett 1973, Browne 1962 (1)
-calc_VOLCFGRS_brackett_browne_1 <- function(SPCD, DBH, HT, B0, B1, B2, B3, B4, B5,
+calc_VOLCFGRS_brackett_browne_1 <- function(SPCD, DBH, HT, B1, B2, B3, B4, B5,
                                             B6, B7, B8, B9, B10, B11) {
     VOLCFGRS = ((10**B1*DBH**B2*HT**B3*B4)/
                   ((B5*(1 + B6*exp(B7*(DBH/10))))*
@@ -38,11 +38,11 @@ calc_VOLCFGRS_mac_berg_2 <- function(SPCD, DBH, HT, B0, B1, B2, B3, B4) {
 }
 
 # Maclean and Berger 1976 (3)
-calc_VOLCFGRS_mac_berg_3 <- function(SPCD, DBH, HT, B0, B1, B2, B3) {
+calc_VOLCFGRS_mac_berg_3 <- function(SPCD, DBH, HT, B1, B2, B3) {
   DBH = max(DBH, 6)  
   V1 = B2 + B3*DBH**-1
   V1 = ifelse(V1 < 0.27, 0.27, V1)
-  VOLCFGRS = B1*DBH**2*HT*V1
+  VOLCFGRS = B1*(DBH**2*HT)*V1
   return(VOLCFGRS)
 }
 
@@ -84,11 +84,12 @@ calc_VOLCFGRS_brack_mac_berg <- function(SPCD, DBH, HT, B0, B1, B2, B3) {
   V1 = B2 + B3*DBH**-1
   V1 = ifelse(V1 > 0.4, 0.4, 
               ifelse(V1 < 0.3, 0.3, V1))
-  VOLCFGRS = B1*(DBH**2*HT)*V1
+  VOLCFGRS = B1*(DBH**2)*HT*V1
   return(VOLCFGRS)
 }
+
 # Brackett 1973, Summerfield unpublished 1980, Browne 1962
-calc_VOLCFGRS_brack_summ_browne <- function(SPCD, DBH, HT, B0, B1, B2, B3, B4, 
+calc_VOLCFGRS_brack_summ_browne <- function(SPCD, DBH, HT, B1, B2, B3, B4, 
                                            B5, B6, B7, B8, B9, B10, B11, B12, B13) {
   VOLCFGRS = (exp(B1 + B2*log(DBH) + B3*log(HT)**2 + (B4/(HT**2)) + B5*log(HT))*B6) / 
                 ((B7*(1+B8*exp(B9*(DBH/10)))*(B10*DBH**2 + B11) + B12)) * 
@@ -107,7 +108,7 @@ calc_VOLCFGRS_mac_berg_5 <- function(SPCD, DBH, HT, B1, B2, B3, B4) {
 }
 
 # Brackett 1973, Browne 1962 (2)
-calc_VOLCFGRS_brack_browne_2 <- function(SPCD, DBH, HT, B0, B1, B2, B3, B4,
+calc_VOLCFGRS_brack_browne_2 <- function(SPCD, DBH, HT, B1, B2, B3, B4,
                                          B5, B6, B7, B8, B9, B10, B11, B12,
                                          B13, B14){
   V1 = B1 + B2*log10(DBH)*log10(HT) + B3*log10(DBH)**2 + B4*log10(DBH) + B5*log10(HT) + B6*log10(HT)**2
@@ -150,7 +151,7 @@ calc_VOLCFGRS_pills_kirk <- function(SPCD, DBH, HT, B0, B1, B2, B3){
 }
 
 # Brackett 1973, Curtis et al. 1968, Browne 1962
-calc_VOLCFGRS_brack_curt_browne <- function(SPCD, DBH, HT, B0, B1, B2, B3, B4,
+calc_VOLCFGRS_brack_curt_browne <- function(SPCD, DBH, HT, B1, B2, B3, B4,
                                          B5, B6, B7, B8, B9, B10, B11, B12,
                                          B13, B14, B15, B16, B17, B18, B19,
                                          B20, B21, B22, B23, B24, B25, B26){
@@ -158,11 +159,11 @@ calc_VOLCFGRS_brack_curt_browne <- function(SPCD, DBH, HT, B0, B1, B2, B3, B4,
   V3 = (HT + B25 - (DBH/B26))/(HT + B5)
   V2 = V3**2.5
   V1 = (B4*DBH**2*(HT+B5)*(B6*V2 + B7*V2*DBH*10e-3+
-                             B8*V2*HT*DBH*10e-5 + B10*V2*HT**2*10e-6 +
-                             B11*V2*sqrt(HT)*10e-6 + B12*V3**4*DBH*10e-3 + B13*V3**4*HT*10e-3 +
-                             B14*V3**33*HT*DBH*10e-6 + B15*V3**33*sqrt(HT)*10e-4 + B16*V3**41*HT**2*10e-7)/
-          ((B17 + B18*B19**(DBH + B20))*((B21*(1 + B22*exp(B23*(DBH/10))*(B1*DBH**2 + B2) + B24)))))
-  V1 = ifelse (V1 <= 0, 0.01)
+                             B8*V2*HT*10e-3 + B9*V2*DBH*HT*10e-5 + B10*V2*HT**2*10e-6 +
+                             B11*V2*sqrt(HT)*10e-3 + B12*V3**4*DBH*10e-3 + B13*V3**4*HT*10e-3 +
+                             B14*V3**33*HT*DBH*10e-6 + B15*V3**33*sqrt(HT)*10e-4 + B16*V3**41*HT**2*10e-7)*B3)/
+          ((B17 + B18*B19**(DBH + B20))*((B21*(1 + B22*exp(B23*(DBH/10))*(B1*DBH**2 + B2) + B24))))
+  V1 = ifelse (V1 <= 0, 0.01, V1)
   VOLCFGRS = V1*((B1*DBH**2-B2)/B3)
   
   return(VOLCFGRS)

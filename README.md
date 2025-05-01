@@ -1,6 +1,6 @@
 # crm
 
-![Screenshot of Woodall et al. 2011.](crm_paper.png "Screenshot of Woodall et al. 2011.")
+<img src="crm_paper.png" alt="Screenshot of Woodall et al. 2011." title="Screenshot of Woodall et al. 2011." width="300" />
 
 Files and R code to make predictions of tree volume, biomass, and carbon using the Component Ratio Method, as described in [Woodall et al. 2011](https://www.nrs.fs.usda.gov/pubs/gtr/gtr_nrs88.pdf).
 

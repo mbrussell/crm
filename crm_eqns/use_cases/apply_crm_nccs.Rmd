@@ -13,7 +13,7 @@ library(readxl)
 
 ```{r}
 # Set working directory
-my_dir <-".../crm_eqns/"
+my_dir <-"C:/Users/matt/Documents/Arbor/Projects/nsvb/analysis/crm_eqns/"
 ```
 
 ```{r}
@@ -96,7 +96,7 @@ tree <- sdt_tree
 
 # 1. Gross volume
 tree <- tree |> 
-  mutate(SPCD = ifelse(SPCD %in% c(6918, 8427, 827), 999, SPCD)) |> 
+  mutate(SPCD = ifelse(SPCD %in% c(6918, 8427, 827, 521, 822), 999, SPCD)) |> 
   inner_join(coefs_VOLCFGRS, by = "SPCD") 
 
 tree_filter <- tree |> 

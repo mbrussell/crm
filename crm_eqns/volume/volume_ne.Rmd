@@ -17,7 +17,9 @@ calc_VOLCFGRS <- function(SPCD, DBH, BOLE_HT, B0, B1, B2, B3, B4, B5) {
 ```{r}
 # 2. Sound volume
 calc_VOLCFSND <- function(PCT_ROTTEN, VOLCFGRS){
-  VOLCFSND = ifelse(is.na(PCT_ROTTEN), 0, VOLCFGRS*(1-(PCT_ROTTEN/100)))
+  PCT_ROTTEN = ifelse(is.na(PCT_ROTTEN), 0,
+                      ifelse(PCT_ROTTEN > 98, 100, PCT_ROTTEN))
+  VOLCFSND = VOLCFGRS*(1-(PCT_ROTTEN/100))
   return(VOLCFSND)
   } 
 ```
